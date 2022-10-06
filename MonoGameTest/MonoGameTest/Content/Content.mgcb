@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin I am - Ken Arai.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:I am - Ken Arai.mp3
+
+#begin I am - Ken Arai.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:I am - Ken Arai.wav;I am - Ken AraiWave.wav
+
 #begin tales-of-symphonia-dawn-of-the-new-world-tales-of-asteria-tales-of-link-emil-castagnier-others.jpg
 /importer:TextureImporter
 /processor:TextureProcessor

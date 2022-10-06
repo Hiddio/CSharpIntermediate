@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
+using System.Collections.Generic;
 
 namespace MonoGameTest
 {
@@ -8,6 +11,9 @@ namespace MonoGameTest
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        Song _IAmSong;
+        
+
 
         private Texture2D _emilTexture;
         public Game1()
@@ -15,6 +21,8 @@ namespace MonoGameTest
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            
         }
 
         protected override void Initialize()
@@ -29,8 +37,11 @@ namespace MonoGameTest
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _emilTexture = this.Content.Load<Texture2D>("tales-of-symphonia-dawn-of-the-new-world-tales-of-asteria-tales-of-link-emil-castagnier-others");
-            
 
+            _IAmSong = Content.Load<Song>("I am - Ken Arai");
+            MediaPlayer.Play(_IAmSong);
+
+            
             // TODO: use this.Content to load your game content here
         }
 
