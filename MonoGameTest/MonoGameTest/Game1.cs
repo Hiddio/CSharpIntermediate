@@ -11,37 +11,53 @@ namespace MonoGameTest
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        Song _IAmSong;
-        
 
+        Song _backGroundMusic;
 
-        private Texture2D _emilTexture;
+        Viewport _viewPort;
+        Player _player;
+        bool justFired;
+        List<Enemy> _activeEnemies = new List<Enemy>();
+        List<Bullet> _firedBullets = new List<Bullet>();
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            
-        }
 
+        }
+        
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
 
             base.Initialize();
+
+            _graphics.PreferredBackBufferHeight = 900;
+            _graphics.PreferredBackBufferWidth = 1000;
+
+            _graphics.ApplyChanges();
+            _viewPort = _graphics.GraphicsDevice.Viewport;
         }
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _emilTexture = this.Content.Load<Texture2D>("tales-of-symphonia-dawn-of-the-new-world-tales-of-asteria-tales-of-link-emil-castagnier-others");
-
-            _IAmSong = Content.Load<Song>("I am - Ken Arai");
-            MediaPlayer.Play(_IAmSong);
 
             
+            _player = new Player();
+
+            _viewPort = new Viewport();
+
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+           
+            _player._shipTexture = this.Content.Load<Texture2D>("SpaceShip");
+
+            _backGroundMusic = this.Content.Load<Song>("Hypnotik - Ken Arai");
+            MediaPlayer.Play(_backGroundMusic);
+
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -50,6 +66,26 @@ namespace MonoGameTest
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _player.UpdatePlayer();
+            //_bullet.UpdateBullet();
+
+            
+            foreach(Bullet bullet in _firedBullets)
+            {
+                bullet.UpdateBullet(false);
+
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false)
+            {
+                Bullet newBllet = new Bullet(_player._position, 1f);
+                newBllet._texture = this.Content.Load<Texture2D>("BulletTexture");
+                _firedBullets.Add(newBllet);
+                justFired = true;
+            }
+            if (Keyboard.GetState().IsKeyUp(Keys.Space))
+            {
+                justFired = false;
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -61,7 +97,17 @@ namespace MonoGameTest
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_emilTexture, new Vector2(0, 0), Color.White);
+            _spriteBatch.Draw(_player._shipTexture, _player._position, Color.White);
+
+            foreach (Bullet bullet in _firedBullets)
+            {
+                bullet.Draw(gameTime, _spriteBatch);
+
+            }
+            foreach (Enemy enemy in _activeEnemies)
+            {
+                enemy.Draw(gameTime, _spriteBatch);
+            }
             _spriteBatch.End();
 
             base.Draw(gameTime);
