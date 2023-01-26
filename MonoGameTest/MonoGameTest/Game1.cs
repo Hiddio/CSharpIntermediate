@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
+using System;
 
 namespace MonoGameTest
 {
@@ -75,16 +76,24 @@ namespace MonoGameTest
                 bullet.UpdateBullet(false);
 
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false)
+            if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
             {
-                Bullet newBllet = new Bullet(_player._position, 1f);
-                newBllet._texture = this.Content.Load<Texture2D>("BulletTexture");
-                _firedBullets.Add(newBllet);
                 justFired = true;
+                Console.WriteLine(justFired);
+                Bullet newBllet = new Bullet(_player._position, 1f);
+                newBllet._texture = Content.Load<Texture2D>("BulletTexture");
+                _firedBullets.Add(newBllet);
+                
             }
-            if (Keyboard.GetState().IsKeyUp(Keys.Space))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
             {
                 justFired = false;
+            }
+
+            foreach(Enemy enemy in _activeEnemies)
+            {
+                enemy.Update();
+
             }
             // TODO: Add your update logic here
 
