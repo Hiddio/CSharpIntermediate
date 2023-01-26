@@ -76,17 +76,17 @@ namespace MonoGameTest
                 bullet.UpdateBullet(false);
 
             }
-            if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
             {
                 justFired = true;
                 Console.WriteLine(justFired);
-                Bullet newBllet = new Bullet(_player._position, 1f);
+                Bullet newBllet = new Bullet(_player._position, 2f);
                 newBllet._texture = Content.Load<Texture2D>("BulletTexture");
                 _firedBullets.Add(newBllet);
                 
             }
-            if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
-            {
+            if (Keyboard.GetState().IsKeyUp(Keys.Space) && GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
+            { 
                 justFired = false;
             }
 
