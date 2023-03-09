@@ -14,8 +14,6 @@ namespace MonoGameTest
         public Texture2D _enemyTexture;
         public float _scale;
         Rectangle hitBox;
-
-        
         public Enemy(Vector2 pos, float scale)
         {
             _position = pos;
@@ -28,8 +26,10 @@ namespace MonoGameTest
             hitBox = new Rectangle((int)_position.X, (int)_position.Y, _enemyTexture.Width, _enemyTexture.Height);
         }
             
+        public void Spawn()
+        {
 
-
+        }
         public void Update()
         {
             _position.Y -= 10;
