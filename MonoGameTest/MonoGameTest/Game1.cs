@@ -20,6 +20,8 @@ namespace MonoGameTest
         bool justFired;
         List<Enemy> _activeEnemies = new List<Enemy>();
         List<Bullet> _firedBullets = new List<Bullet>();
+        float _totalTime;
+        float _timerTime = 5;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -54,7 +56,7 @@ namespace MonoGameTest
 
            
             _player._shipTexture = this.Content.Load<Texture2D>("SpaceShip");
-
+            
             _backGroundMusic = this.Content.Load<Song>("Hypnotik - Ken Arai");
             MediaPlayer.Play(_backGroundMusic);
 
@@ -70,8 +72,26 @@ namespace MonoGameTest
             _player.UpdatePlayer();
             //_bullet.UpdateBullet();
 
-            
-            foreach(Bullet bullet in _firedBullets)
+            //Hier haal ik de "deltaTime" op
+            _totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if(_totalTime >= _timerTime)
+            {
+
+                
+                Random random = new Random();
+                int spawnLocX = random.Next(2, GraphicsDevice.Viewport.Width - 2);
+                int spawnLocY = 4;
+                //int spawnLocation = random.Next(spawnLocX, spawnLocY);
+                Vector2 pos = new Vector2(spawnLocX, spawnLocY);
+
+                Enemy newEnemy = new Enemy(pos, 1);
+                newEnemy._enemyTexture = Content.Load<Texture2D>("EnemyTexture");
+                _activeEnemies.Add(newEnemy);
+            }
+
+
+            foreach (Bullet bullet in _firedBullets)
             {
                 bullet.UpdateBullet(false);
 

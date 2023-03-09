@@ -20,17 +20,19 @@ namespace MonoGameTest
         {
             _position = pos;
             _scale = scale;
+            setHitbox();
+        }
+        
+        public void setHitbox()
+        {
             hitBox = new Rectangle((int)_position.X, (int)_position.Y, _enemyTexture.Width, _enemyTexture.Height);
         }
+            
 
-        public void Spawn()
-        {
-
-        }
 
         public void Update()
         {
-
+            _position.Y -= 10;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
