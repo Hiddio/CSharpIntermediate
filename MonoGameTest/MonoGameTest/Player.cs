@@ -27,6 +27,7 @@ namespace MonoGameTest
         
         public void UpdatePlayer()
         {
+            //FEEDBACK PlayerMovement() functie
             if (Keyboard.GetState().IsKeyDown(Keys.W) || Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
             {
                 _position.Y -= 10;
@@ -43,6 +44,11 @@ namespace MonoGameTest
             {
                 _position.X += 10;
             }
+            //FEEDBACK end PlayerMovement() functie
+
+            //FEEDBACK KeepPlayerOnScreen() functie
+
+            //FEEDBACK 780 en 980 zijn hardcoded, probeer de _graphics variabel van Game1 te gebruiken, dan kun je precies de grootte van het scherm aflezen
             if (_position.Y <= -10)
             {
                 _position.Y = 780;
@@ -59,6 +65,8 @@ namespace MonoGameTest
             {
                 _position.Y = 0;
             }
+
+            //FEEDBACK end KeepPlayerOnScreen() functie
         }
     }
 }
