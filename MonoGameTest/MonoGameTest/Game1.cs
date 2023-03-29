@@ -10,6 +10,14 @@ namespace MonoGameTest
 {
     public class Game1 : Game
     {
+        //FEEDBACK public Fields schrijf je met PascalCasing
+        //FEEDBACK private Fields schrijf je met camelCasing + eventueel (optioneel) een underscore prefix: "_"
+        //FEEDBACK Je kunt prima de "private" Access Modifier weglaten, maar wees hier dan consistent in!
+        
+        //FEEDBACK Deel lange functies op in meerdere kleinere functies, beste is om een functie maar één functionaliteit te geven
+        //FEEDBACK CreateEnemy(), CreateBullet(), PlayerMovement(), KeepPlayerOnScreen() functies
+
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -64,6 +72,8 @@ namespace MonoGameTest
             // TODO: use this.Content to load your game content here
         }
 
+        //FEEDBACK Splits de code in de Update functie op in meerdere kleinere functies en probeer alleen maar Method Calls te doen in de Update functie
+        //FEEDBACK Zoals je _player.UpdatePlayer() hebt gedaan
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -77,8 +87,7 @@ namespace MonoGameTest
 
             if(_totalTime >= _timerTime)
             {
-
-                
+                //FEEDBACK Stop dit blok code in een CreateEnemy() functie
                 Random random = new Random();
                 int spawnLocX = random.Next(2, GraphicsDevice.Viewport.Width - 2);
                 int spawnLocY = 4;
@@ -88,6 +97,7 @@ namespace MonoGameTest
                 Enemy newEnemy = new Enemy(pos, 1);
                 newEnemy._enemyTexture = Content.Load<Texture2D>("EnemyTexture");
                 _activeEnemies.Add(newEnemy);
+                //FEEDBACK end CreateEnemy() functie
             }
 
 
@@ -96,19 +106,23 @@ namespace MonoGameTest
                 bullet.UpdateBullet(false);
 
             }
+
+            //FEEDBACK Stop dit blok in een CheckPlayerShoot() functie
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
             {
                 justFired = true;
                 Console.WriteLine(justFired);
+                //FEEDBACK Je zou ook nog dit stukje in een CreateBullet() functie kunnen stoppen
                 Bullet newBllet = new Bullet(_player._position, 2f);
                 newBllet._texture = Content.Load<Texture2D>("BulletTexture");
                 _firedBullets.Add(newBllet);
-                
+                //FEEDBACK end CreateBullet() functie
             }
             if (Keyboard.GetState().IsKeyUp(Keys.Space) && GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
             { 
                 justFired = false;
             }
+            //FEEDBACK end CheckPlayerShoot functie()
 
             foreach(Enemy enemy in _activeEnemies)
             {
