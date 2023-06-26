@@ -18,8 +18,8 @@ namespace MonoGameTest
         //FEEDBACK CreateEnemy(), CreateBullet(), PlayerMovement(), KeepPlayerOnScreen() functies
 
 
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
 
         Song _backGroundMusic;
 
@@ -95,7 +95,7 @@ namespace MonoGameTest
                 Vector2 pos = new Vector2(spawnLocX, spawnLocY);
 
                 Enemy newEnemy = new Enemy(pos, 1);
-                newEnemy._enemyTexture = Content.Load<Texture2D>("EnemyTexture");
+                newEnemy.EnemyTexture = Content.Load<Texture2D>("EnemyTexture");
                 _activeEnemies.Add(newEnemy);
                 //FEEDBACK end CreateEnemy() functie
             }
@@ -104,7 +104,7 @@ namespace MonoGameTest
             foreach (Bullet bullet in _firedBullets)
             {
                 bullet.UpdateBullet(false);
-
+               
             }
 
             //FEEDBACK Stop dit blok in een CheckPlayerShoot() functie
