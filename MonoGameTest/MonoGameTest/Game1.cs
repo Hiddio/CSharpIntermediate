@@ -22,10 +22,9 @@ namespace MonoGameTest
         SpriteBatch _spriteBatch;
 
         Song _backGroundMusic;
-
-        Viewport _viewPort;
         Player _player;
-        bool _justFired;
+        GameManager _gameManager;
+        
         List<Enemy> _activeEnemies = new List<Enemy>();
         List<Bullet> _firedBullets = new List<Bullet>();
         float _totalTime;
@@ -42,14 +41,14 @@ namespace MonoGameTest
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
-            base.Initialize();
-
             _graphics.PreferredBackBufferHeight = 900;
             _graphics.PreferredBackBufferWidth = 1000;
 
             _graphics.ApplyChanges();
-            _viewPort = _graphics.GraphicsDevice.Viewport;
+
+            base.Initialize();
+
+            
         }
 
         protected override void LoadContent()
@@ -58,12 +57,11 @@ namespace MonoGameTest
             
             _player = new Player();
 
-            _viewPort = new Viewport();
-
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            _gameManager = new GameManager();
            
-            _player._shipTexture = Content.Load<Texture2D>("SpaceShip");
+            _player.ShipTexture = Content.Load<Texture2D>("SpaceShip");
             
             _backGroundMusic = Content.Load<Song>("Hypnotik - Ken Arai");
             MediaPlayer.Play(_backGroundMusic);
@@ -79,7 +77,7 @@ namespace MonoGameTest
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _player.UpdatePlayer();
+            _player.Update(_graphics);
             //_bullet.UpdateBullet();
 
             //Hier haal ik de "deltaTime" op
@@ -87,49 +85,12 @@ namespace MonoGameTest
 
             if(_totalTime >= _timerTime)
             {
-                //FEEDBACK Stop dit blok code in een CreateEnemy() functie
-                Random random = new Random();
-                int spawnLocX = random.Next(1, GraphicsDevice.Viewport.Width - 2);
-                int spawnLocY = 2;
-                //int spawnLocation = random.Next(spawnLocX, spawnLocY);
-                Vector2 pos = new Vector2(spawnLocX, spawnLocY);
-
-                Enemy newEnemy = new Enemy(pos, 0.05f, Content.Load<Texture2D>("EnemyTexture"));
-                
-                _activeEnemies.Add(newEnemy);
+                _gameManager.CreateEnemy(this);
                 _timerTime = _timerTime + 5;
-                //FEEDBACK end CreateEnemy() functie
             }
-
-
-            foreach (Bullet bullet in _firedBullets)
-            {
-                bullet.UpdateBullet(false);
-               
-            }
-
-            //FEEDBACK Stop dit blok in een CheckPlayerShoot() functie
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && _justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && _justFired == false)
-            {
-                _justFired = true;
-                Console.WriteLine(_justFired);
-                //FEEDBACK Je zou ook nog dit stukje in een CreateBullet() functie kunnen stoppen
-                Bullet newBllet = new Bullet(_player._position, 2f, Content.Load<Texture2D>("BulletTexture"));
-                
-                _firedBullets.Add(newBllet);
-                //FEEDBACK end CreateBullet() functie
-            }
-            if (Keyboard.GetState().IsKeyUp(Keys.Space) && GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
-            { 
-                _justFired = false;
-            }
-            //FEEDBACK end CheckPlayerShoot functie()
-
-            foreach(Enemy enemy in _activeEnemies)
-            {
-                enemy.Update();
-
-            }
+            
+            _gameManager.Update(this, _player);
+            
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -141,17 +102,10 @@ namespace MonoGameTest
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_player._shipTexture, _player._position, Color.White);
+            _spriteBatch.Draw(_player.ShipTexture, _player.Position, Color.White);
 
-            foreach (Bullet bullet in _firedBullets)
-            {
-                bullet.Draw(gameTime, _spriteBatch);
-
-            }
-            foreach (Enemy enemy in _activeEnemies)
-            {
-                enemy.Draw(gameTime, _spriteBatch);
-            }
+            
+            _gameManager.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);

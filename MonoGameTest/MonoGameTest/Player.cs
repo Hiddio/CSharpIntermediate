@@ -12,60 +12,64 @@ namespace MonoGameTest
 {
     internal class Player
     {
-        public Vector2 _position;
-        public Texture2D _shipTexture;
+        public Vector2 Position;
+        public Texture2D ShipTexture;
 
         public Player()
         {
 
-            _position = new Microsoft.Xna.Framework.Vector2(0, 0);
+            Position = new Microsoft.Xna.Framework.Vector2(0, 0);
             
 
             
         }
         
-        public void UpdatePlayer()
+        public void Update(GraphicsDeviceManager graphics)
+        {
+            KeepPlayerOnScreen(graphics);
+            PlayerMovement();
+            
+            //FEEDBACK KeepPlayerOnScreen() functie
+
+            //FEEDBACK 780 en 980 zijn hardcoded, probeer de _graphics variabel van Game1 te gebruiken, dan kun je precies de grootte van het scherm aflezen
+            
+
+            //FEEDBACK end KeepPlayerOnScreen() functie
+        }
+
+        public void KeepPlayerOnScreen(GraphicsDeviceManager graphics)
+        {
+            if (Position.X > graphics.PreferredBackBufferWidth - ShipTexture.Width)
+            {
+                Position.X = graphics.PreferredBackBufferWidth - ShipTexture.Width;
+            }
+            else if (Position.X < ShipTexture.Width / 2)
+            {
+                Position.X = ShipTexture.Width / 2;
+            }
+            
+        }
+
+        public void PlayerMovement()
         {
             //FEEDBACK PlayerMovement() functie
             if (Keyboard.GetState().IsKeyDown(Keys.W) || Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
             {
-                _position.Y -= 10;
+                Position.Y -= 10;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S) || Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
             {
-                _position.Y += 10;
+                Position.Y += 10;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A) || Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
             {
-                _position.X -= 10;
+                Position.X -= 10;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D) || Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
             {
-                _position.X += 10;
+                Position.X += 10;
             }
             //FEEDBACK end PlayerMovement() functie
-
-            //FEEDBACK KeepPlayerOnScreen() functie
-
-            //FEEDBACK 780 en 980 zijn hardcoded, probeer de _graphics variabel van Game1 te gebruiken, dan kun je precies de grootte van het scherm aflezen
-            if (_position.Y <= -10)
-            {
-                _position.Y = 780;
-            }
-            if (_position.X <= -10)
-            {
-                _position.X = 980;
-            }
-            if (_position.X >= 1000)
-            {
-                _position.X = 0;
-            }
-            if (_position.Y >= 870)
-            {
-                _position.Y = 0;
-            }
-
-            //FEEDBACK end KeepPlayerOnScreen() functie
         }
     }
 }
