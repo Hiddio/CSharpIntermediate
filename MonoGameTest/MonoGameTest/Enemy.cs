@@ -37,13 +37,7 @@ namespace MonoGameTest
         }
 
 
-        //FEEDBACK Ik denk niet dat je een Spawn() functie nodig hebt... Als je een Enemy instance maakt wordt de Constructor aangeroepen
-        //FEEDBACK Als je in de Game1 class het volgende doet: "Enemy newEnemy = new Enemy(...)" Dan maak je een nieuwe Enemy instance aan
-        //FEEDBACK en "Spawned" hij als het ware al...
-        public void Spawn()
-        {
-
-        }
+        
         public void Update()
         {
             Position.Y += 10;

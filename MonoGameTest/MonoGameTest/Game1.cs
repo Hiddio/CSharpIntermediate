@@ -29,7 +29,7 @@ namespace MonoGameTest
         List<Enemy> _activeEnemies = new List<Enemy>();
         List<Bullet> _firedBullets = new List<Bullet>();
         float _totalTime;
-        float _timerTime = 5;
+        float _timerTime = 5f;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -89,14 +89,15 @@ namespace MonoGameTest
             {
                 //FEEDBACK Stop dit blok code in een CreateEnemy() functie
                 Random random = new Random();
-                int spawnLocX = random.Next(2, GraphicsDevice.Viewport.Width - 2);
-                int spawnLocY = 4;
+                int spawnLocX = random.Next(1, GraphicsDevice.Viewport.Width - 2);
+                int spawnLocY = 2;
                 //int spawnLocation = random.Next(spawnLocX, spawnLocY);
                 Vector2 pos = new Vector2(spawnLocX, spawnLocY);
 
                 Enemy newEnemy = new Enemy(pos, 0.05f, Content.Load<Texture2D>("EnemyTexture"));
                 newEnemy.EnemyTexture = Content.Load<Texture2D>("EnemyTexture");
                 _activeEnemies.Add(newEnemy);
+                _timerTime = _timerTime + 5;
                 //FEEDBACK end CreateEnemy() functie
             }
 
