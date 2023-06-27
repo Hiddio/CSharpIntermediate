@@ -63,13 +63,13 @@ namespace MonoGameTest
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
            
-            _player._shipTexture = this.Content.Load<Texture2D>("SpaceShip");
+            _player._shipTexture = Content.Load<Texture2D>("SpaceShip");
             
-            _backGroundMusic = this.Content.Load<Song>("Hypnotik - Ken Arai");
+            _backGroundMusic = Content.Load<Song>("Hypnotik - Ken Arai");
             MediaPlayer.Play(_backGroundMusic);
 
 
-            // TODO: use this.Content to load your game content here
+            
         }
 
         //FEEDBACK Splits de code in de Update functie op in meerdere kleinere functies en probeer alleen maar Method Calls te doen in de Update functie
@@ -95,7 +95,7 @@ namespace MonoGameTest
                 Vector2 pos = new Vector2(spawnLocX, spawnLocY);
 
                 Enemy newEnemy = new Enemy(pos, 0.05f, Content.Load<Texture2D>("EnemyTexture"));
-                newEnemy.EnemyTexture = Content.Load<Texture2D>("EnemyTexture");
+                
                 _activeEnemies.Add(newEnemy);
                 _timerTime = _timerTime + 5;
                 //FEEDBACK end CreateEnemy() functie
@@ -114,8 +114,8 @@ namespace MonoGameTest
                 _justFired = true;
                 Console.WriteLine(_justFired);
                 //FEEDBACK Je zou ook nog dit stukje in een CreateBullet() functie kunnen stoppen
-                Bullet newBllet = new Bullet(_player._position, 2f);
-                newBllet._texture = Content.Load<Texture2D>("BulletTexture");
+                Bullet newBllet = new Bullet(_player._position, 2f, Content.Load<Texture2D>("BulletTexture"));
+                
                 _firedBullets.Add(newBllet);
                 //FEEDBACK end CreateBullet() functie
             }

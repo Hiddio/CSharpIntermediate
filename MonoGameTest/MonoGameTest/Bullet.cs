@@ -12,14 +12,21 @@ namespace MonoGameTest
     internal class Bullet
     {
         //FEEDBACK public Fields schrijf je met PascalCasing en ZONDER een underscore prefix "_"! 
-        public Vector2 _position;
-        public Texture2D _texture;
-        public float _scale;
+        public Vector2 Position;
+        public Texture2D Texture;
+        public float Scale;
+        Rectangle hitBox;
 
-        public Bullet(Vector2 pos, float scale)
+        public Bullet(Vector2 pos, float scale, Texture2D texture)
         {
-           _position = pos;
-           _scale = scale;
+           Position = pos;
+           Scale = scale;
+            Texture = texture;
+        }
+
+        public void SetHitbox()
+        {
+            hitBox = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
         }
 
         public void UpdateBullet(bool enemy)
@@ -32,18 +39,18 @@ namespace MonoGameTest
             //FEEDBACK Dan staat de Bullet class los van de Player class en de Enemy class
             if(enemy == true)
             {
-                _position.Y += 10;
+                Position.Y += 10;
             }
             else
             {
-                _position.Y -= 10;
+                Position.Y -= 10;
             }
             
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, _position, null, Color.White, 0, Vector2.Zero, _scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, Position, null, Color.White, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
         }
     }
 }
