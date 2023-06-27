@@ -25,7 +25,7 @@ namespace MonoGameTest
 
         Viewport _viewPort;
         Player _player;
-        bool justFired;
+        bool _justFired;
         List<Enemy> _activeEnemies = new List<Enemy>();
         List<Bullet> _firedBullets = new List<Bullet>();
         float _totalTime;
@@ -94,7 +94,7 @@ namespace MonoGameTest
                 //int spawnLocation = random.Next(spawnLocX, spawnLocY);
                 Vector2 pos = new Vector2(spawnLocX, spawnLocY);
 
-                Enemy newEnemy = new Enemy(pos, 1);
+                Enemy newEnemy = new Enemy(pos, 0.05f, Content.Load<Texture2D>("EnemyTexture"));
                 newEnemy.EnemyTexture = Content.Load<Texture2D>("EnemyTexture");
                 _activeEnemies.Add(newEnemy);
                 //FEEDBACK end CreateEnemy() functie
@@ -108,10 +108,10 @@ namespace MonoGameTest
             }
 
             //FEEDBACK Stop dit blok in een CheckPlayerShoot() functie
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && _justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && _justFired == false)
             {
-                justFired = true;
-                Console.WriteLine(justFired);
+                _justFired = true;
+                Console.WriteLine(_justFired);
                 //FEEDBACK Je zou ook nog dit stukje in een CreateBullet() functie kunnen stoppen
                 Bullet newBllet = new Bullet(_player._position, 2f);
                 newBllet._texture = Content.Load<Texture2D>("BulletTexture");
@@ -120,7 +120,7 @@ namespace MonoGameTest
             }
             if (Keyboard.GetState().IsKeyUp(Keys.Space) && GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
             { 
-                justFired = false;
+                _justFired = false;
             }
             //FEEDBACK end CheckPlayerShoot functie()
 

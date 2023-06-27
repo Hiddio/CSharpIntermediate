@@ -17,11 +17,11 @@ namespace MonoGameTest
         public Texture2D EnemyTexture;
         public float Scale;
         Rectangle hitBox;
-        public Enemy(Vector2 pos, float scale)
+        public Enemy(Vector2 pos, float scale, Texture2D enemyTexture)
         {
             Position = pos;
             Scale = scale;
-
+            EnemyTexture = enemyTexture;
             //FEEDBACK je error komt doordat je in setHitbox() de EnemyTexture gebruikt. Die is op dit moment (in de constructor) nog null
             
             //FEEDBACK Dit staat in je Game1 class:
@@ -46,7 +46,7 @@ namespace MonoGameTest
         }
         public void Update()
         {
-            Position.Y -= 10;
+            Position.Y += 10;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
