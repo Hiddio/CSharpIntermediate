@@ -15,21 +15,17 @@ namespace MonoGameTest
 
         public Vector2 Position;
         public Texture2D EnemyTexture;
-        public float Scale;
+        float Scale;
         public Rectangle HitBox;
         public Enemy(Vector2 pos, float scale, Texture2D enemyTexture)
         {
             Position = pos;
             Scale = scale;
             EnemyTexture = enemyTexture;
-            //FEEDBACK je error komt doordat je in setHitbox() de EnemyTexture gebruikt. Die is op dit moment (in de constructor) nog null
-            
-            //FEEDBACK Dit staat in je Game1 class:
-            //FEEDBACK      Enemy newEnemy = new Enemy(pos, 1); <= hier gebruik je dus al setHitbox en gebruik je al EnemyTexture
-            //FEEDBACK      newEnemy.EnemyTexture = Content.Load<Texture2D>("EnemyTexture"); <= terwijl hij hier pas gezet wordt
+
             SetHitbox();
         }
-        
+
         //FEEDBACK Methods schrijf je ALTIJD met PascalCasing
         public void SetHitbox()
         {
