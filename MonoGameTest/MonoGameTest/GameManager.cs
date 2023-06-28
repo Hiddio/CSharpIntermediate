@@ -12,31 +12,32 @@ namespace MonoGameTest
 {
     internal class GameManager
     {
-
-        
-        public List<Enemy> activeEnemies;
+        public List<Enemy> currentEnemies;
         public List<Bullet> firedBullets;
         Player player;
         bool justFired;
         public GameManager()
         {
-            activeEnemies = new List<Enemy>();  
-            firedBullets = new List<Bullet>();   
+            currentEnemies = new List<Enemy>();
+            firedBullets = new List<Bullet>();
         }
 
-        public void CreateEnemy(Game1 gameOne) 
+        public void CreateEnemy(Game1 gameOne, GraphicsDeviceManager graphics)
         {
             //FEEDBACK Stop dit blok code in een CreateEnemy() functie
             Random random = new Random();
-            int spawnLocX = random.Next(1, gameOne.GraphicsDevice.Viewport.Width - 2);
+            int spawnLocX = random.Next(1, graphics.PreferredBackBufferWidth);
             int spawnLocY = 2;
             //int spawnLocation = random.Next(spawnLocX, spawnLocY);
             Vector2 pos = new Vector2(spawnLocX, spawnLocY);
 
             Enemy newEnemy = new Enemy(pos, 0.05f, gameOne.Content.Load<Texture2D>("EnemyTexture"));
 
-            activeEnemies.Add(newEnemy);
-            
+            currentEnemies.Add(newEnemy);
+            foreach (Bullet bullet in firedBullets)
+            {
+                bullet.currentEnemies.Add(newEnemy);
+            }
             //FEEDBACK end CreateEnemy() functie
         }
 
@@ -47,12 +48,12 @@ namespace MonoGameTest
             {
                 justFired = true;
 
-                Bullet newBullet = new Bullet(player.Position, 2f, gameOne.Content.Load<Texture2D>("BulletTexture"));
+                Bullet newBullet = new Bullet(player.Position - (new Vector2(player.ShipTexture.Width / 2, player.ShipTexture.Height / 2)), 2f, gameOne.Content.Load<Texture2D>("BulletTexture")); ;
 
                 firedBullets.Add(newBullet);
             }
-            
-            
+
+
 
         }
 
@@ -62,13 +63,13 @@ namespace MonoGameTest
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
             {
                 justFired = true;
-                
+
             }
             if (Keyboard.GetState().IsKeyUp(Keys.Space) && GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
             {
                 justFired = false;
             }
-            
+
         }
 
         public void Update(Game1 gameOne, Player player)
@@ -80,22 +81,9 @@ namespace MonoGameTest
             {
                 bullet.Update();
 
-                
-
-                foreach (Enemy enemy in activeEnemies)
-                {
-                    
-
-                    if (enemy.HitBox.Contains(bullet.HitBox))
-                    {
-                        activeEnemies.Remove(enemy);
-                        firedBullets.Remove(bullet);
-                    }
-
-                }
             }
 
-            foreach (Enemy enemy in activeEnemies)
+            foreach (Enemy enemy in currentEnemies)
             {
                 enemy.Update();
 
@@ -105,7 +93,7 @@ namespace MonoGameTest
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            foreach (Enemy enemy in activeEnemies)
+            foreach (Enemy enemy in currentEnemies)
             {
                 enemy.Draw(gameTime, spriteBatch);
             }
@@ -117,6 +105,6 @@ namespace MonoGameTest
             }
 
         }
-        
+
     }
 }
