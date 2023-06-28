@@ -23,6 +23,8 @@ namespace MonoGameTest
 
             Texture = texture;
 
+            currentEnemies = new List<Enemy>();
+
             SetHitbox();
         }
 

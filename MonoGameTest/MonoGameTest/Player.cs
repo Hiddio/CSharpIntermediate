@@ -22,6 +22,7 @@ namespace MonoGameTest
             Position = pos;
             Scale = scale;
             ShipTexture = shipTexture;
+            currentEnemies = new List<Enemy>();
 
             SetHitbox();
         }
