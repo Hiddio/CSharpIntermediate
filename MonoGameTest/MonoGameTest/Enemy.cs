@@ -17,30 +17,36 @@ namespace MonoGameTest
         public Texture2D EnemyTexture;
         float Scale;
         public Rectangle HitBox;
-        public Enemy(Vector2 pos, float scale, Texture2D enemyTexture)
+        public int Index;
+        public Enemy(Vector2 pos, float scale, Texture2D enemyTexture, int index)
         {
             Position = pos;
             Scale = scale;
             EnemyTexture = enemyTexture;
+            Index = index;
 
-            SetHitbox();
+            HitBox = new Rectangle((int)Position.X, (int)Position.Y, EnemyTexture.Width / 20, EnemyTexture.Height / 20);
+            
         }
 
         //FEEDBACK Methods schrijf je ALTIJD met PascalCasing
         public void SetHitbox()
         {
-            HitBox = new Rectangle((int)Position.X, (int)Position.Y, EnemyTexture.Width, EnemyTexture.Height);
+            
         }
 
         public void Update()
         {
             Position.Y += 10;
+            HitBox.X = (int)Position.X;
+            HitBox.Y = (int)Position.Y;
 
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
         {
             spriteBatch.Draw(EnemyTexture, Position, null, Color.White, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, HitBox, Color.White);
         }
     }
 }

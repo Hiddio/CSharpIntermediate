@@ -13,9 +13,11 @@ namespace MonoGameTest
         public float Scale;
         public Rectangle HitBox;
         public List<Enemy> currentEnemies;
-        public Bullet(Vector2 pos, float scale, Texture2D texture)
+        public int Index;
+        public float timer;
+        public bool remove;
+        public Bullet(Vector2 pos, float scale, Texture2D texture, int index)
         {
-            Console.WriteLine("BAM!");
 
             Position = pos;
 
@@ -23,45 +25,41 @@ namespace MonoGameTest
 
             Texture = texture;
 
+            Index = index;
+
             currentEnemies = new List<Enemy>();
 
-            SetHitbox();
+            Index = index;
+
+            HitBox = new Rectangle((int)Position.X + Texture.Width / 2, (int)Position.Y + Texture.Height / 2, Texture.Width, Texture.Height);
         }
 
         public void SetHitbox()
         {
-            HitBox = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
+            HitBox.X = (int)Position.X + Texture.Width / 2;
+            HitBox.Y = (int)Position.Y + Texture.Height / 2;
         }
+       
+        
 
-        public void EnemyCollision()
+        public void Update(GameTime gameTime)
         {
-            foreach (Enemy enemy in currentEnemies)
+            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if(timer > 1)
             {
-                if (enemy.HitBox.Contains(this.HitBox))
-                {
-
-                }
+                remove = true;
             }
-        }
-
-        public void Update()
-        {
-            //FEEDBACK Ik raad je aan om de Bullet een richting (direction) te geven i.p.v. deze boolean
-            //FEEDBACK Voor de Player kun je dan new Vector2(0,-10) gebruiken en voor de Enemy new Vector2(0,10)
-            //FEEDBACK Het mooiste is om dit aan de constructor toe te voegen
-
-            //FEEDBACK Op deze manier kun je de Bullet class makkelijker in verschillende scenarios gebruiken
-            //FEEDBACK Dan staat de Bullet class los van de Player class en de Enemy class
-
 
             Position.Y -= 10;
-            // edit, weggehaald "enemy bool check" voor else als enemy bullet schoot
 
+            SetHitbox();
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
         {
             spriteBatch.Draw(Texture, Position, null, Color.White, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, HitBox, Color.White);
         }
     }
 }

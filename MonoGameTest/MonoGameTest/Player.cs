@@ -20,23 +20,46 @@ namespace MonoGameTest
         {
 
             Position = pos;
+
             Scale = scale;
+
             ShipTexture = shipTexture;
+
             currentEnemies = new List<Enemy>();
 
-            SetHitbox();
+            HitBox = new Rectangle((int)Position.X, (int)Position.Y, ShipTexture.Width, ShipTexture.Height);
         }
 
         public void SetHitbox()
         {
-            HitBox = new Rectangle((int)Position.X, (int)Position.Y, ShipTexture.Width, ShipTexture.Height);
+            HitBox.X = (int)Position.X;
+            HitBox.Y = (int)Position.Y;
+        }
+
+        public bool EnemyCollision()
+        {
+            bool collided = false;
+            foreach (Enemy enemy in currentEnemies)
+            {
+                if (this.HitBox.Contains(enemy.HitBox))
+                {
+                    collided = true;
+                    Console.WriteLine("PLAYER HIT");
+                }
+                else
+                {
+                    collided = false;
+                }
+            }
+
+            return collided;
         }
 
         public void Update(GraphicsDeviceManager graphics)
         {
             KeepPlayerOnScreen(graphics);
             PlayerMovement();
-
+            SetHitbox();
         }
 
         public void KeepPlayerOnScreen(GraphicsDeviceManager graphics)
@@ -80,6 +103,12 @@ namespace MonoGameTest
                 Position.X += 10;
             }
             //FEEDBACK end PlayerMovement() functie
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
+        {
+            spriteBatch.Draw(ShipTexture, Position, null, Color.White, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, HitBox, Color.White);
         }
     }
 }

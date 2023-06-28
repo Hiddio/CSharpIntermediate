@@ -29,6 +29,8 @@ namespace MonoGameTest
         float _totalTime;
         float _timerTime = 5f;
         float _addedTime = 5f;
+
+        Texture2D _pixel;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -45,6 +47,10 @@ namespace MonoGameTest
             _graphics.PreferredBackBufferWidth = 1000;
 
             _graphics.ApplyChanges();
+
+            _pixel = new Texture2D(GraphicsDevice, 1, 1);
+
+            _pixel.SetData(new Color[] { new Color(255, 0, 0, 50) });
 
             base.Initialize();
 
@@ -98,7 +104,7 @@ namespace MonoGameTest
 
             }
 
-            _gameManager.Update(this, _player);
+            _gameManager.Update(this, _player, gameTime);
 
             // TODO: Add your update logic here
 
@@ -111,10 +117,11 @@ namespace MonoGameTest
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_player.ShipTexture, _player.Position, Color.White);
+            
+            _player.Draw(gameTime, _spriteBatch, _pixel);
 
+            _gameManager.Draw(gameTime, _spriteBatch, _pixel);
 
-            _gameManager.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);
