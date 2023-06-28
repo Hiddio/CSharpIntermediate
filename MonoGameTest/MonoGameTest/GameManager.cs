@@ -97,7 +97,7 @@ namespace MonoGameTest
                 {
 
                     firedBullets.RemoveAt(i);
-                    i--;
+                    
 
                 }
 
