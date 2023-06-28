@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace MonoGameTest
 {
@@ -14,27 +13,29 @@ namespace MonoGameTest
     {
         public Vector2 Position;
         public Texture2D ShipTexture;
-
-        public Player()
+        float Scale;
+        public Rectangle HitBox;
+        public List<Enemy> currentEnemies;
+        public Player(Vector2 pos, float scale, Texture2D shipTexture)
         {
 
-            Position = new Microsoft.Xna.Framework.Vector2(0, 0);
-            
+            Position = pos;
+            Scale = scale;
+            ShipTexture = shipTexture;
 
-            
+            SetHitbox();
         }
-        
+
+        public void SetHitbox()
+        {
+            HitBox = new Rectangle((int)Position.X, (int)Position.Y, ShipTexture.Width, ShipTexture.Height);
+        }
+
         public void Update(GraphicsDeviceManager graphics)
         {
             KeepPlayerOnScreen(graphics);
             PlayerMovement();
-            
-            //FEEDBACK KeepPlayerOnScreen() functie
 
-            //FEEDBACK 780 en 980 zijn hardcoded, probeer de _graphics variabel van Game1 te gebruiken, dan kun je precies de grootte van het scherm aflezen
-            
-
-            //FEEDBACK end KeepPlayerOnScreen() functie
         }
 
         public void KeepPlayerOnScreen(GraphicsDeviceManager graphics)
@@ -47,7 +48,15 @@ namespace MonoGameTest
             {
                 Position.X = ShipTexture.Width / 2;
             }
-            
+            else if (Position.Y > graphics.PreferredBackBufferHeight - ShipTexture.Height)
+            {
+                Position.Y = graphics.PreferredBackBufferHeight - ShipTexture.Height;
+            }
+            else if (Position.Y < ShipTexture.Height / 2)
+            {
+                Position.Y = ShipTexture.Height / 2;
+            }
+
         }
 
         public void PlayerMovement()
