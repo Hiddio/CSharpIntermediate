@@ -15,7 +15,7 @@ namespace MonoGameTest
         public List<Enemy> currentEnemies;
         public int Index;
         public float timer;
-        public bool remove;
+        public bool Remove;
         public Bullet(Vector2 pos, float scale, Texture2D texture, int index)
         {
 
@@ -46,9 +46,9 @@ namespace MonoGameTest
         {
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(timer > 1)
+            if(timer > 2)
             {
-                remove = true;
+                Remove = true;
             }
 
             Position.Y -= 10;

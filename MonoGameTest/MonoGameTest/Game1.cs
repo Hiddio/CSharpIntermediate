@@ -87,8 +87,6 @@ namespace MonoGameTest
             //Hier haal ik de "deltaTime" op
             _totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-
-
             if (_totalTime >= _timerTime)
             {
 

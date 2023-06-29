@@ -15,9 +15,30 @@ namespace MonoGameTest
 
         public Vector2 Position;
         public Texture2D EnemyTexture;
-        float Scale;
-        public Rectangle HitBox;
+        public float Scale;
+
+        // backing field
+        private Rectangle? _hitbox;
+        // public hitbox property
+        public Rectangle HitBox
+        {
+            // only has getter, thus it can not be set to a value from anywhere
+            get
+            {
+                // if the backing field is null, then we set it to a new Rectangle with the correct scale.
+                _hitbox ??= new(0, 0, (int)(EnemyTexture.Width * Scale), (int)(EnemyTexture.Height * Scale));
+                // be cause the backingfield is nullable, we get the value cuz struct will be of type Nullable<Rectangle>
+                Rectangle rect = _hitbox.Value;
+                // set the position of the hitbox according to the objects position
+                rect.X = (int)Position.X;
+                rect.Y = (int)Position.Y;
+                // return the final hitbox
+                return rect;
+            }
+        }
         public int Index;
+        public float timer;
+        public bool Remove;
         public Enemy(Vector2 pos, float scale, Texture2D enemyTexture, int index)
         {
             Position = pos;
@@ -25,7 +46,7 @@ namespace MonoGameTest
             EnemyTexture = enemyTexture;
             Index = index;
 
-            HitBox = new Rectangle((int)Position.X, (int)Position.Y, EnemyTexture.Width / 20, EnemyTexture.Height / 20);
+            //HitBox = new Rectangle((int)Position.X, (int)Position.Y, EnemyTexture.Width / 20, EnemyTexture.Height / 20);
             
         }
 
@@ -35,11 +56,18 @@ namespace MonoGameTest
             
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
+            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timer > 2)
+            {
+                Remove = true;
+            }
+
             Position.Y += 10;
-            HitBox.X = (int)Position.X;
-            HitBox.Y = (int)Position.Y;
+            //HitBox.X = (int)Position.X;
+            //HitBox.Y = (int)Position.Y;
 
         }
 

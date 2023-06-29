@@ -33,12 +33,16 @@ namespace MonoGameTest
             //FEEDBACK Stop dit blok code in een CreateEnemy() functie
             Random random = new Random();
 
-            int spawnLocX = random.Next(0, graphics.PreferredBackBufferWidth);
+            float scale = 0.05f;
+            var tex = gameOne.Content.Load<Texture2D>("EnemyTexture");
+
+            int spawnLocX = random.Next(0, graphics.PreferredBackBufferWidth - (int)(tex.Width * scale));
             int spawnLocY = 0;
 
-            Vector2 pos = new Vector2(spawnLocX, spawnLocY);
 
-            Enemy newEnemy = new Enemy(pos, 0.05f, gameOne.Content.Load<Texture2D>("EnemyTexture"), enemyIndex);
+            Vector2 pos = new Vector2(spawnLocX, spawnLocY);
+            Enemy newEnemy = new Enemy(pos, scale, tex, enemyIndex);
+
 
             currentEnemies.Add(newEnemy);
             enemyIndex++;
@@ -93,33 +97,40 @@ namespace MonoGameTest
                 Bullet bullet = firedBullets[i];
                 bullet.Update(gameTime);
 
-                if (firedBullets[i].remove)
+                if (firedBullets[i].Remove)
                 {
 
                     firedBullets.RemoveAt(i);
                     
 
                 }
-
                 foreach (Enemy enemy in currentEnemies)
                 {
+
                     if (bullet.HitBox.Intersects(enemy.HitBox))
                     {
-                        Console.WriteLine($"Bullet hit enemy: {enemy.Index}");
+                        Console.WriteLine($"Bullet hit enemy: {enemy}");
                         Console.WriteLine(i);
-                        firedBullets.RemoveAt(i);
+                        firedBullets[i].Remove = true;
+                        enemy.Remove = true;
 
                     }
                 }
+                
             }
-
-
-
-            foreach (Enemy enemy in currentEnemies)
+            for (int j = currentEnemies.Count - 1; j >= 0; j--)
             {
-                enemy.Update();
+                Enemy enemy = currentEnemies[j];
+                enemy.Update(gameTime);
+                if (currentEnemies[j].Remove)
+                {
 
+                    currentEnemies.RemoveAt(j);
+
+
+                }
             }
+
 
             CollisionManager();
 
