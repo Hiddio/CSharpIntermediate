@@ -14,7 +14,22 @@ namespace MonoGameTest
         public Vector2 Position;
         public Texture2D ShipTexture;
         float Scale;
-        public Rectangle HitBox;
+        private int playerSpeed;
+        private Rectangle? hitBox;
+        public Rectangle HitBox
+        {
+            get
+            {
+                hitBox ??= new(0, 0, (int)(ShipTexture.Width * Scale), (int)(ShipTexture.Height * Scale));
+
+                Rectangle rect = hitBox.Value;
+
+                rect.X = (int)Position.X;
+                rect.Y = (int)Position.Y;
+
+                return rect;
+            }
+        }
         public List<Enemy> currentEnemies;
         public Player(Vector2 pos, float scale, Texture2D shipTexture)
         {
@@ -25,15 +40,11 @@ namespace MonoGameTest
 
             ShipTexture = shipTexture;
 
+            playerSpeed = 13;
+
             currentEnemies = new List<Enemy>();
 
-            HitBox = new Rectangle((int)Position.X, (int)Position.Y, ShipTexture.Width, ShipTexture.Height);
-        }
 
-        public void SetHitbox()
-        {
-            HitBox.X = (int)Position.X;
-            HitBox.Y = (int)Position.Y;
         }
 
         public bool EnemyCollision()
@@ -59,7 +70,7 @@ namespace MonoGameTest
         {
             KeepPlayerOnScreen(graphics);
             PlayerMovement();
-            SetHitbox();
+          
         }
 
         public void KeepPlayerOnScreen(GraphicsDeviceManager graphics)
@@ -88,19 +99,19 @@ namespace MonoGameTest
             //FEEDBACK PlayerMovement() functie
             if (Keyboard.GetState().IsKeyDown(Keys.W) || Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
             {
-                Position.Y -= 10;
+                Position.Y -= playerSpeed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S) || Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
             {
-                Position.Y += 10;
+                Position.Y += playerSpeed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A) || Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
             {
-                Position.X -= 10;
+                Position.X -= playerSpeed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D) || Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
             {
-                Position.X += 10;
+                Position.X += playerSpeed;
             }
             //FEEDBACK end PlayerMovement() functie
         }

@@ -11,7 +11,23 @@ namespace MonoGameTest
         public Vector2 Position;
         public Texture2D Texture;
         public float Scale;
-        public Rectangle HitBox;
+        private Rectangle? hitBox;
+        public Rectangle HitBox
+        {
+
+            get
+            {
+                hitBox ??= new(0, 0, (int)(Texture.Width * Scale), (int)(Texture.Height * Scale));
+
+                Rectangle rect = hitBox.Value;
+
+                rect.X = (int)Position.X;
+                rect.Y = (int)Position.Y;
+
+                return rect;
+            }
+
+        }
         public List<Enemy> currentEnemies;
         public int Index;
         public float timer;
@@ -31,14 +47,10 @@ namespace MonoGameTest
 
             Index = index;
 
-            HitBox = new Rectangle((int)Position.X + Texture.Width / 2, (int)Position.Y + Texture.Height / 2, Texture.Width, Texture.Height);
+            
         }
 
-        public void SetHitbox()
-        {
-            HitBox.X = (int)Position.X + Texture.Width / 2;
-            HitBox.Y = (int)Position.Y + Texture.Height / 2;
-        }
+       
        
         
 
@@ -53,7 +65,6 @@ namespace MonoGameTest
 
             Position.Y -= 10;
 
-            SetHitbox();
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)

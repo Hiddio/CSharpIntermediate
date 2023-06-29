@@ -37,7 +37,7 @@ namespace MonoGameTest
             var tex = gameOne.Content.Load<Texture2D>("EnemyTexture");
 
             int spawnLocX = random.Next(0, graphics.PreferredBackBufferWidth - (int)(tex.Width * scale));
-            int spawnLocY = 0;
+            int spawnLocY = 0 - (int)(tex.Height * scale);
 
 
             Vector2 pos = new Vector2(spawnLocX, spawnLocY);
@@ -104,15 +104,15 @@ namespace MonoGameTest
                     
 
                 }
-                foreach (Enemy enemy in currentEnemies)
+                for (int j = currentEnemies.Count - 1; j >= 0; j--)
                 {
 
-                    if (bullet.HitBox.Intersects(enemy.HitBox))
+                    if (bullet.HitBox.Intersects(currentEnemies[j].HitBox))
                     {
-                        Console.WriteLine($"Bullet hit enemy: {enemy}");
+                        Console.WriteLine($"Bullet hit enemy: {j}");
                         Console.WriteLine(i);
                         firedBullets[i].Remove = true;
-                        enemy.Remove = true;
+                        currentEnemies[j].Remove = true;
 
                     }
                 }

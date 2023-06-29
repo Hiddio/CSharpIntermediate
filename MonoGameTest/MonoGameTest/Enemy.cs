@@ -18,7 +18,7 @@ namespace MonoGameTest
         public float Scale;
 
         // backing field
-        private Rectangle? _hitbox;
+        private Rectangle? hitbox;
         // public hitbox property
         public Rectangle HitBox
         {
@@ -26,9 +26,9 @@ namespace MonoGameTest
             get
             {
                 // if the backing field is null, then we set it to a new Rectangle with the correct scale.
-                _hitbox ??= new(0, 0, (int)(EnemyTexture.Width * Scale), (int)(EnemyTexture.Height * Scale));
+                hitbox ??= new(0, 0, (int)(EnemyTexture.Width * Scale), (int)(EnemyTexture.Height * Scale));
                 // be cause the backingfield is nullable, we get the value cuz struct will be of type Nullable<Rectangle>
-                Rectangle rect = _hitbox.Value;
+                Rectangle rect = hitbox.Value;
                 // set the position of the hitbox according to the objects position
                 rect.X = (int)Position.X;
                 rect.Y = (int)Position.Y;
@@ -46,7 +46,7 @@ namespace MonoGameTest
             EnemyTexture = enemyTexture;
             Index = index;
 
-            //HitBox = new Rectangle((int)Position.X, (int)Position.Y, EnemyTexture.Width / 20, EnemyTexture.Height / 20);
+            
             
         }
 
