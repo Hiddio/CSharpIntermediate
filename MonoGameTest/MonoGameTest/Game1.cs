@@ -13,23 +13,24 @@ namespace MonoGameTest
         //FEEDBACK public Fields schrijf je met PascalCasing
         //FEEDBACK private Fields schrijf je met camelCasing + eventueel (optioneel) een underscore prefix: "_"
         //FEEDBACK Je kunt prima de "private" Access Modifier weglaten, maar wees hier dan consistent in!
-        
+
         //FEEDBACK Deel lange functies op in meerdere kleinere functies, beste is om een functie maar één functionaliteit te geven
         //FEEDBACK CreateEnemy(), CreateBullet(), PlayerMovement(), KeepPlayerOnScreen() functies
 
 
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
 
         Song _backGroundMusic;
-
-        Viewport _viewPort;
         Player _player;
-        bool justFired;
-        List<Enemy> _activeEnemies = new List<Enemy>();
-        List<Bullet> _firedBullets = new List<Bullet>();
+        Vector2 _playerPos;
+        GameManager _gameManager;
+
         float _totalTime;
-        float _timerTime = 5;
+        float _timerTime = 5f;
+        float _addedTime = 5f;
+
+        Texture2D _pixel;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -38,38 +39,39 @@ namespace MonoGameTest
 
 
         }
-        
+
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
-            base.Initialize();
-
             _graphics.PreferredBackBufferHeight = 900;
             _graphics.PreferredBackBufferWidth = 1000;
 
             _graphics.ApplyChanges();
-            _viewPort = _graphics.GraphicsDevice.Viewport;
+
+            _pixel = new Texture2D(GraphicsDevice, 1, 1);
+
+            _pixel.SetData(new Color[] { new Color(255, 0, 0, 50) });
+
+            base.Initialize();
+
+
         }
 
         protected override void LoadContent()
         {
 
-            
-            _player = new Player();
-
-            _viewPort = new Viewport();
+            _playerPos = new Vector2(0, 0);
+            _player = new Player(_playerPos, 1, Content.Load<Texture2D>("SpaceShip"));
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-           
-            _player._shipTexture = this.Content.Load<Texture2D>("SpaceShip");
-            
-            _backGroundMusic = this.Content.Load<Song>("Hypnotik - Ken Arai");
+            _gameManager = new GameManager();
+
+            _backGroundMusic = Content.Load<Song>("Hypnotik - Ken Arai");
             MediaPlayer.Play(_backGroundMusic);
 
 
-            // TODO: use this.Content to load your game content here
+
         }
 
         //FEEDBACK Splits de code in de Update functie op in meerdere kleinere functies en probeer alleen maar Method Calls te doen in de Update functie
@@ -79,56 +81,29 @@ namespace MonoGameTest
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _player.UpdatePlayer();
+            _player.Update(_graphics);
             //_bullet.UpdateBullet();
 
             //Hier haal ik de "deltaTime" op
             _totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(_totalTime >= _timerTime)
+            if (_totalTime >= _timerTime)
             {
-                //FEEDBACK Stop dit blok code in een CreateEnemy() functie
-                Random random = new Random();
-                int spawnLocX = random.Next(2, GraphicsDevice.Viewport.Width - 2);
-                int spawnLocY = 4;
-                //int spawnLocation = random.Next(spawnLocX, spawnLocY);
-                Vector2 pos = new Vector2(spawnLocX, spawnLocY);
 
-                Enemy newEnemy = new Enemy(pos, 1);
-                newEnemy._enemyTexture = Content.Load<Texture2D>("EnemyTexture");
-                _activeEnemies.Add(newEnemy);
-                //FEEDBACK end CreateEnemy() functie
-            }
+                _gameManager.CreateEnemy(this, _graphics);
 
+                if (_addedTime > 1)
+                {
+                    _addedTime--;
 
-            foreach (Bullet bullet in _firedBullets)
-            {
-                bullet.UpdateBullet(false);
+                }
+
+                _timerTime = _totalTime + _addedTime;
 
             }
 
-            //FEEDBACK Stop dit blok in een CheckPlayerShoot() functie
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
-            {
-                justFired = true;
-                Console.WriteLine(justFired);
-                //FEEDBACK Je zou ook nog dit stukje in een CreateBullet() functie kunnen stoppen
-                Bullet newBllet = new Bullet(_player._position, 2f);
-                newBllet._texture = Content.Load<Texture2D>("BulletTexture");
-                _firedBullets.Add(newBllet);
-                //FEEDBACK end CreateBullet() functie
-            }
-            if (Keyboard.GetState().IsKeyUp(Keys.Space) && GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
-            { 
-                justFired = false;
-            }
-            //FEEDBACK end CheckPlayerShoot functie()
+            _gameManager.Update(this, _player, gameTime);
 
-            foreach(Enemy enemy in _activeEnemies)
-            {
-                enemy.Update();
-
-            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -140,17 +115,11 @@ namespace MonoGameTest
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_player._shipTexture, _player._position, Color.White);
+            
+            _player.Draw(gameTime, _spriteBatch, _pixel);
 
-            foreach (Bullet bullet in _firedBullets)
-            {
-                bullet.Draw(gameTime, _spriteBatch);
+            _gameManager.Draw(gameTime, _spriteBatch, _pixel);
 
-            }
-            foreach (Enemy enemy in _activeEnemies)
-            {
-                enemy.Draw(gameTime, _spriteBatch);
-            }
             _spriteBatch.End();
 
             base.Draw(gameTime);

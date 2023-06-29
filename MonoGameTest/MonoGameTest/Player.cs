@@ -4,69 +4,122 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace MonoGameTest
 {
     internal class Player
     {
-        public Vector2 _position;
-        public Texture2D _shipTexture;
+        public Vector2 Position;
+        public Texture2D ShipTexture;
+        float Scale;
+        private int playerSpeed;
+        private Rectangle? hitBox;
+        public Rectangle HitBox
+        {
+            get
+            {
+                hitBox ??= new(0, 0, (int)(ShipTexture.Width * Scale), (int)(ShipTexture.Height * Scale));
 
-        public Player()
+                Rectangle rect = hitBox.Value;
+
+                rect.X = (int)Position.X;
+                rect.Y = (int)Position.Y;
+
+                return rect;
+            }
+        }
+        public List<Enemy> currentEnemies;
+        public Player(Vector2 pos, float scale, Texture2D shipTexture)
         {
 
-            _position = new Microsoft.Xna.Framework.Vector2(0, 0);
-            
+            Position = pos;
 
-            
+            Scale = scale;
+
+            ShipTexture = shipTexture;
+
+            playerSpeed = 13;
+
+            currentEnemies = new List<Enemy>();
+
+
         }
-        
-        public void UpdatePlayer()
+
+        public bool EnemyCollision()
+        {
+            bool collided = false;
+            foreach (Enemy enemy in currentEnemies)
+            {
+                if (this.HitBox.Contains(enemy.HitBox))
+                {
+                    collided = true;
+                    Console.WriteLine("PLAYER HIT");
+                }
+                else
+                {
+                    collided = false;
+                }
+            }
+
+            return collided;
+        }
+
+        public void Update(GraphicsDeviceManager graphics)
+        {
+            KeepPlayerOnScreen(graphics);
+            PlayerMovement();
+          
+        }
+
+        public void KeepPlayerOnScreen(GraphicsDeviceManager graphics)
+        {
+            if (Position.X > graphics.PreferredBackBufferWidth - ShipTexture.Width)
+            {
+                Position.X = graphics.PreferredBackBufferWidth - ShipTexture.Width;
+            }
+            else if (Position.X < ShipTexture.Width / 2)
+            {
+                Position.X = ShipTexture.Width / 2;
+            }
+            else if (Position.Y > graphics.PreferredBackBufferHeight - ShipTexture.Height)
+            {
+                Position.Y = graphics.PreferredBackBufferHeight - ShipTexture.Height;
+            }
+            else if (Position.Y < ShipTexture.Height / 2)
+            {
+                Position.Y = ShipTexture.Height / 2;
+            }
+
+        }
+
+        public void PlayerMovement()
         {
             //FEEDBACK PlayerMovement() functie
             if (Keyboard.GetState().IsKeyDown(Keys.W) || Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
             {
-                _position.Y -= 10;
+                Position.Y -= playerSpeed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S) || Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
             {
-                _position.Y += 10;
+                Position.Y += playerSpeed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A) || Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
             {
-                _position.X -= 10;
+                Position.X -= playerSpeed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D) || Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
             {
-                _position.X += 10;
+                Position.X += playerSpeed;
             }
             //FEEDBACK end PlayerMovement() functie
+        }
 
-            //FEEDBACK KeepPlayerOnScreen() functie
-
-            //FEEDBACK 780 en 980 zijn hardcoded, probeer de _graphics variabel van Game1 te gebruiken, dan kun je precies de grootte van het scherm aflezen
-            if (_position.Y <= -10)
-            {
-                _position.Y = 780;
-            }
-            if (_position.X <= -10)
-            {
-                _position.X = 980;
-            }
-            if (_position.X >= 1000)
-            {
-                _position.X = 0;
-            }
-            if (_position.Y >= 870)
-            {
-                _position.Y = 0;
-            }
-
-            //FEEDBACK end KeepPlayerOnScreen() functie
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
+        {
+            spriteBatch.Draw(ShipTexture, Position, null, Color.White, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, HitBox, Color.White);
         }
     }
 }

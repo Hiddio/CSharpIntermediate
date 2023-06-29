@@ -13,45 +13,68 @@ namespace MonoGameTest
     {
         //FEEDBACK public Fields schrijf je met PascalCasing en ZONDER een underscore prefix "_"! 
 
-        public Vector2 _position;
-        public Texture2D _enemyTexture;
-        public float _scale;
-        Rectangle hitBox;
-        public Enemy(Vector2 pos, float scale)
-        {
-            _position = pos;
-            _scale = scale;
+        public Vector2 Position;
+        public Texture2D EnemyTexture;
+        public float Scale;
 
-            //FEEDBACK je error komt doordat je in setHitbox() de _enemyTexture gebruikt. Die is op dit moment (in de constructor) nog null
+        // backing field
+        private Rectangle? hitbox;
+        // public hitbox property
+        public Rectangle HitBox
+        {
+            // only has getter, thus it can not be set to a value from anywhere
+            get
+            {
+                // if the backing field is null, then we set it to a new Rectangle with the correct scale.
+                hitbox ??= new(0, 0, (int)(EnemyTexture.Width * Scale), (int)(EnemyTexture.Height * Scale));
+                // be cause the backingfield is nullable, we get the value cuz struct will be of type Nullable<Rectangle>
+                Rectangle rect = hitbox.Value;
+                // set the position of the hitbox according to the objects position
+                rect.X = (int)Position.X;
+                rect.Y = (int)Position.Y;
+                // return the final hitbox
+                return rect;
+            }
+        }
+        public int Index;
+        public float timer;
+        public bool Remove;
+        public Enemy(Vector2 pos, float scale, Texture2D enemyTexture, int index)
+        {
+            Position = pos;
+            Scale = scale;
+            EnemyTexture = enemyTexture;
+            Index = index;
+
             
-            //FEEDBACK Dit staat in je Game1 class:
-            //FEEDBACK      Enemy newEnemy = new Enemy(pos, 1); <= hier gebruik je dus al setHitbox en gebruik je al _enemyTexture
-            //FEEDBACK      newEnemy._enemyTexture = Content.Load<Texture2D>("EnemyTexture"); <= terwijl hij hier pas gezet wordt
-            setHitbox();
+            
         }
-        
+
         //FEEDBACK Methods schrijf je ALTIJD met PascalCasing
-        public void setHitbox()
+        public void SetHitbox()
         {
-            hitBox = new Rectangle((int)_position.X, (int)_position.Y, _enemyTexture.Width, _enemyTexture.Height);
+            
         }
 
-
-        //FEEDBACK Ik denk niet dat je een Spawn() functie nodig hebt... Als je een Enemy instance maakt wordt de Constructor aangeroepen
-        //FEEDBACK Als je in de Game1 class het volgende doet: "Enemy newEnemy = new Enemy(...)" Dan maak je een nieuwe Enemy instance aan
-        //FEEDBACK en "Spawned" hij als het ware al...
-        public void Spawn()
+        public void Update(GameTime gameTime)
         {
+            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timer > 2)
+            {
+                Remove = true;
+            }
+
+            Position.Y += 10;
+            //HitBox.X = (int)Position.X;
+            //HitBox.Y = (int)Position.Y;
 
         }
-        public void Update()
-        {
-            _position.Y -= 10;
-        }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
         {
-            spriteBatch.Draw(_enemyTexture, _position, null, Color.White, 0, Vector2.Zero, _scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(EnemyTexture, Position, null, Color.White, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, HitBox, Color.White);
         }
     }
 }

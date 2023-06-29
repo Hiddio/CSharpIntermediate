@@ -1,49 +1,76 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
 
 namespace MonoGameTest
 {
     internal class Bullet
     {
         //FEEDBACK public Fields schrijf je met PascalCasing en ZONDER een underscore prefix "_"! 
-        public Vector2 _position;
-        public Texture2D _texture;
-        public float _scale;
-
-        public Bullet(Vector2 pos, float scale)
+        public Vector2 Position;
+        public Texture2D Texture;
+        public float Scale;
+        private Rectangle? hitBox;
+        public Rectangle HitBox
         {
-           _position = pos;
-           _scale = scale;
+
+            get
+            {
+                hitBox ??= new(0, 0, (int)(Texture.Width * Scale), (int)(Texture.Height * Scale));
+
+                Rectangle rect = hitBox.Value;
+
+                rect.X = (int)Position.X;
+                rect.Y = (int)Position.Y;
+
+                return rect;
+            }
+
+        }
+        public List<Enemy> currentEnemies;
+        public int Index;
+        public float timer;
+        public bool Remove;
+        public Bullet(Vector2 pos, float scale, Texture2D texture, int index)
+        {
+
+            Position = pos;
+
+            Scale = scale;
+
+            Texture = texture;
+
+            Index = index;
+
+            currentEnemies = new List<Enemy>();
+
+            Index = index;
+
+            
         }
 
-        public void UpdateBullet(bool enemy)
+       
+       
+        
+
+        public void Update(GameTime gameTime)
         {
-            //FEEDBACK Ik raad je aan om de Bullet een richting (direction) te geven i.p.v. deze boolean
-            //FEEDBACK Voor de Player kun je dan new Vector2(0,-10) gebruiken en voor de Enemy new Vector2(0,10)
-            //FEEDBACK Het mooiste is om dit aan de constructor toe te voegen
-            
-            //FEEDBACK Op deze manier kun je de Bullet class makkelijker in verschillende scenarios gebruiken
-            //FEEDBACK Dan staat de Bullet class los van de Player class en de Enemy class
-            if(enemy == true)
+            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if(timer > 2)
             {
-                _position.Y += 10;
+                Remove = true;
             }
-            else
-            {
-                _position.Y -= 10;
-            }
-            
+
+            Position.Y -= 10;
+
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
         {
-            spriteBatch.Draw(_texture, _position, null, Color.White, 0, Vector2.Zero, _scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, Position, null, Color.White, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, HitBox, Color.White);
         }
     }
 }
