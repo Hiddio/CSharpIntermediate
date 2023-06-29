@@ -14,83 +14,72 @@ namespace MonoGameTest
     {
         public List<Enemy> currentEnemies;
         public List<Bullet> firedBullets;
-        Player player;
         bool justFired;
-        int bulletIndex;
-        int enemyIndex;
+        float totalTime;
+        float timerTime = 5f;
+        float addedTime = 5f;
+        
         public GameManager()
         {
             currentEnemies = new List<Enemy>();
             firedBullets = new List<Bullet>();
-
-            bulletIndex = 0;
-            enemyIndex = 0;
-
         }
 
-        public void CreateEnemy(Game1 gameOne, GraphicsDeviceManager graphics)
+        public void CreateEnemy(Game1 gameOne, GraphicsDeviceManager graphics, GameTime gameTime)
         {
-            //FEEDBACK Stop dit blok code in een CreateEnemy() functie
-            Random random = new Random();
+            totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            float scale = 0.05f;
-            var tex = gameOne.Content.Load<Texture2D>("EnemyTexture");
-
-            int spawnLocX = random.Next(0, graphics.PreferredBackBufferWidth - (int)(tex.Width * scale));
-            int spawnLocY = 0 - (int)(tex.Height * scale);
-
-
-            Vector2 pos = new Vector2(spawnLocX, spawnLocY);
-            Enemy newEnemy = new Enemy(pos, scale, tex, enemyIndex);
-
-
-            currentEnemies.Add(newEnemy);
-            enemyIndex++;
-            foreach (Bullet bullet in firedBullets)
+            if (totalTime >= timerTime)
             {
-                bullet.currentEnemies.Add(newEnemy);
-            }
-            //FEEDBACK end CreateEnemy() functie
-        }
+                Random random = new Random();
 
-        public void CreateBullet(Game1 gameOne, Player player)
-        {
+                float scale = 0.05f;
+                var tex = gameOne.Content.Load<Texture2D>("EnemyTexture");
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
-            {
-                justFired = true;
+                int spawnLocX = random.Next(0, graphics.PreferredBackBufferWidth - (int)(tex.Width * scale));
+                int spawnLocY = 0 - (int)(tex.Height * scale);
 
-                Bullet newBullet = new Bullet(player.Position - (new Vector2(player.ShipTexture.Width / 2, player.ShipTexture.Height / 2)), 2f, gameOne.Content.Load<Texture2D>("BulletTexture"), bulletIndex);
 
+                Vector2 pos = new Vector2(spawnLocX, spawnLocY);
+                Enemy newEnemy = new Enemy(pos, scale, tex);
+
+
+                currentEnemies.Add(newEnemy);
+
+                foreach (Bullet bullet in firedBullets)
+                {
+                    bullet.currentEnemies.Add(newEnemy);
+                }
                 
 
-                firedBullets.Add(newBullet);
-                bulletIndex++;
+                if (addedTime > 1)
+                {
+                    addedTime--;
+                }
+
+                timerTime = totalTime + addedTime;
             }
-
-
-
+            for (int j = currentEnemies.Count - 1; j >= 0; j--)
+            {
+                Enemy enemy = currentEnemies[j];
+                enemy.Update(gameTime);
+                if (currentEnemies[j].Remove)
+                {
+                    currentEnemies.RemoveAt(j);
+                }
+            }
         }
 
-        public void CheckPlayerShoot(Game1 gameOne)
+        public void CreateBullet(Game1 gameOne, Player player, GameTime gameTime)
         {
-
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
             {
                 justFired = true;
 
-            }
-            if (Keyboard.GetState().IsKeyUp(Keys.Space) && GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
-            {
-                justFired = false;
-            }
+                Bullet newBullet = new Bullet(player.Position - (new Vector2(player.ShipTexture.Width / 2, player.ShipTexture.Height / 2)), 2f, gameOne.Content.Load<Texture2D>("BulletTexture"));
 
-        }
-
-        public void Update(Game1 gameOne, Player player, GameTime gameTime)
-        {
-            CreateBullet(gameOne, player);
-            CheckPlayerShoot(gameOne);
+                firedBullets.Add(newBullet);
+            }
 
             for (int i = firedBullets.Count - 1; i >= 0; i--)
             {
@@ -99,70 +88,65 @@ namespace MonoGameTest
 
                 if (firedBullets[i].Remove)
                 {
-
                     firedBullets.RemoveAt(i);
-                    
-
                 }
                 for (int j = currentEnemies.Count - 1; j >= 0; j--)
                 {
-
                     if (bullet.HitBox.Intersects(currentEnemies[j].HitBox))
                     {
                         Console.WriteLine($"Bullet hit enemy: {j}");
                         Console.WriteLine(i);
                         firedBullets[i].Remove = true;
                         currentEnemies[j].Remove = true;
-
                     }
                 }
-                
             }
+        }
+
+        public void CheckPlayerShoot(Game1 gameOne)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
+            {
+                justFired = true;
+            }
+            if (Keyboard.GetState().IsKeyUp(Keys.Space) && GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
+            {
+                justFired = false;
+            }
+        }
+
+        public void PlayerHit(Player player)
+        {
             for (int j = currentEnemies.Count - 1; j >= 0; j--)
             {
-                Enemy enemy = currentEnemies[j];
-                enemy.Update(gameTime);
-                if (currentEnemies[j].Remove)
+                if (player.HitBox.Intersects(currentEnemies[j].HitBox))
                 {
-
-                    currentEnemies.RemoveAt(j);
-
-
+                    Console.WriteLine($"Player got hit");
+                    currentEnemies[j].Remove = true;
+                    player.PlayerDeath = true;
                 }
             }
-
-
-            CollisionManager();
-
         }
 
-        public void CollisionManager()
+        public void PlayerDeath(Game1 gameOne, bool playerDeath)
         {
-           
-
-            //foreach(Bullet bullet in firedBullets)
-            //{
-                
-            //    foreach (Enemy enemy in currentEnemies)
-            //    {
-            //        if (bullet.HitBox.Intersects(enemy.HitBox))
-            //        {
-            //            Console.WriteLine($"Bullet hit enemy: {enemy.Index}");
-            //            Console.WriteLine(bullet.Index);
-            //            firedBullets.RemoveAt(bullet.Index);
-                        
-            //        }
-            //    }
-
-            //}
+            if(playerDeath == true)
+            {
+                gameOne.Exit();
+            }
         }
 
-       
-
+        public void Update(Game1 gameOne, Player player, GameTime gameTime, GraphicsDeviceManager graphics)
+        {
+            CreateEnemy(gameOne, graphics, gameTime);
+            CreateBullet(gameOne, player, gameTime);
+            CheckPlayerShoot(gameOne);
+            PlayerHit(player);
+            PlayerDeath(gameOne, player.PlayerDeath);
+        }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
         {
-
             foreach (Enemy enemy in currentEnemies)
             {
                 enemy.Draw(gameTime, spriteBatch, pixel);
@@ -171,10 +155,7 @@ namespace MonoGameTest
             foreach (Bullet bullet in firedBullets)
             {
                 bullet.Draw(gameTime, spriteBatch, pixel);
-
             }
-
         }
-
     }
 }

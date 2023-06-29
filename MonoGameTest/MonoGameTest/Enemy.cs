@@ -11,8 +11,6 @@ namespace MonoGameTest
 {
     internal class Enemy
     {
-        //FEEDBACK public Fields schrijf je met PascalCasing en ZONDER een underscore prefix "_"! 
-
         public Vector2 Position;
         public Texture2D EnemyTexture;
         public float Scale;
@@ -22,7 +20,7 @@ namespace MonoGameTest
         // public hitbox property
         public Rectangle HitBox
         {
-            // only has getter, thus it can not be set to a value from anywhere
+            // only has getter, it cannot be set to a value from anywhere
             get
             {
                 // if the backing field is null, then we set it to a new Rectangle with the correct scale.
@@ -36,39 +34,25 @@ namespace MonoGameTest
                 return rect;
             }
         }
-        public int Index;
+
         public float timer;
         public bool Remove;
-        public Enemy(Vector2 pos, float scale, Texture2D enemyTexture, int index)
+
+        public Enemy(Vector2 pos, float scale, Texture2D enemyTexture)
         {
             Position = pos;
             Scale = scale;
             EnemyTexture = enemyTexture;
-            Index = index;
-
-            
-            
-        }
-
-        //FEEDBACK Methods schrijf je ALTIJD met PascalCasing
-        public void SetHitbox()
-        {
-            
         }
 
         public void Update(GameTime gameTime)
         {
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             if (timer > 2)
             {
                 Remove = true;
             }
-
             Position.Y += 10;
-            //HitBox.X = (int)Position.X;
-            //HitBox.Y = (int)Position.Y;
-
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)

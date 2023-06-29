@@ -31,20 +31,14 @@ namespace MonoGameTest
             }
         }
         public List<Enemy> currentEnemies;
+        public bool PlayerDeath;
         public Player(Vector2 pos, float scale, Texture2D shipTexture)
         {
-
             Position = pos;
-
             Scale = scale;
-
             ShipTexture = shipTexture;
-
             playerSpeed = 13;
-
             currentEnemies = new List<Enemy>();
-
-
         }
 
         public bool EnemyCollision()
@@ -62,7 +56,6 @@ namespace MonoGameTest
                     collided = false;
                 }
             }
-
             return collided;
         }
 
@@ -70,7 +63,6 @@ namespace MonoGameTest
         {
             KeepPlayerOnScreen(graphics);
             PlayerMovement();
-          
         }
 
         public void KeepPlayerOnScreen(GraphicsDeviceManager graphics)
@@ -91,12 +83,10 @@ namespace MonoGameTest
             {
                 Position.Y = ShipTexture.Height / 2;
             }
-
         }
 
         public void PlayerMovement()
         {
-            //FEEDBACK PlayerMovement() functie
             if (Keyboard.GetState().IsKeyDown(Keys.W) || Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
             {
                 Position.Y -= playerSpeed;
@@ -113,7 +103,6 @@ namespace MonoGameTest
             {
                 Position.X += playerSpeed;
             }
-            //FEEDBACK end PlayerMovement() functie
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)

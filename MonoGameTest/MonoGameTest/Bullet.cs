@@ -26,45 +26,26 @@ namespace MonoGameTest
 
                 return rect;
             }
-
         }
+
         public List<Enemy> currentEnemies;
-        public int Index;
         public float timer;
         public bool Remove;
-        public Bullet(Vector2 pos, float scale, Texture2D texture, int index)
+        public Bullet(Vector2 pos, float scale, Texture2D texture)
         {
-
             Position = pos;
-
             Scale = scale;
-
             Texture = texture;
-
-            Index = index;
-
             currentEnemies = new List<Enemy>();
-
-            Index = index;
-
-            
         }
-
-       
-       
-        
-
         public void Update(GameTime gameTime)
         {
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             if(timer > 2)
             {
                 Remove = true;
             }
-
             Position.Y -= 10;
-
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
