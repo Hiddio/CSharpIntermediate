@@ -12,51 +12,48 @@ namespace MonoGameTest
 {
     internal class GameManager
     {
-        public List<Enemy> currentEnemies;
-        public List<Bullet> firedBullets;
+        List<Enemy> currentEnemies;
+        List<Bullet> firedBullets;
         bool justFired;
         float totalTime;
         float timerTime = 5f;
         float addedTime = 5f;
-        
-        public GameManager()
+        SpriteFont Impact;
+        int score;
+        string scoreString;
+
+        public GameManager(Game1 gameOne)
         {
             currentEnemies = new List<Enemy>();
             firedBullets = new List<Bullet>();
+            Impact = gameOne.Content.Load<SpriteFont>("Impact");
+            
         }
 
         public void CreateEnemy(Game1 gameOne, GraphicsDeviceManager graphics, GameTime gameTime)
         {
             totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             if (totalTime >= timerTime)
             {
                 Random random = new Random();
-
                 float scale = 0.05f;
                 var tex = gameOne.Content.Load<Texture2D>("EnemyTexture");
 
                 int spawnLocX = random.Next(0, graphics.PreferredBackBufferWidth - (int)(tex.Width * scale));
                 int spawnLocY = 0 - (int)(tex.Height * scale);
 
-
                 Vector2 pos = new Vector2(spawnLocX, spawnLocY);
                 Enemy newEnemy = new Enemy(pos, scale, tex);
-
-
                 currentEnemies.Add(newEnemy);
 
                 foreach (Bullet bullet in firedBullets)
                 {
                     bullet.currentEnemies.Add(newEnemy);
                 }
-                
-
                 if (addedTime > 1)
                 {
                     addedTime--;
                 }
-
                 timerTime = totalTime + addedTime;
             }
             for (int j = currentEnemies.Count - 1; j >= 0; j--)
@@ -94,8 +91,7 @@ namespace MonoGameTest
                 {
                     if (bullet.HitBox.Intersects(currentEnemies[j].HitBox))
                     {
-                        Console.WriteLine($"Bullet hit enemy: {j}");
-                        Console.WriteLine(i);
+                        score++;
                         firedBullets[i].Remove = true;
                         currentEnemies[j].Remove = true;
                     }
@@ -145,6 +141,11 @@ namespace MonoGameTest
             PlayerDeath(gameOne, player.PlayerDeath);
         }
 
+        public void DrawScore(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawString(Impact, $"Score: {score}", new Vector2(50, 50), Color.White);
+        }
+
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
         {
             foreach (Enemy enemy in currentEnemies)
@@ -156,6 +157,7 @@ namespace MonoGameTest
             {
                 bullet.Draw(gameTime, spriteBatch, pixel);
             }
+            DrawScore(spriteBatch);
         }
     }
 }

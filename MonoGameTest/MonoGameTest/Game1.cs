@@ -13,6 +13,7 @@ namespace MonoGameTest
         
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        
 
         Song backGroundMusic;
         Player player;
@@ -26,8 +27,6 @@ namespace MonoGameTest
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-
-
         }
 
         protected override void Initialize()
@@ -39,35 +38,26 @@ namespace MonoGameTest
             graphics.ApplyChanges();
 
             pixel = new Texture2D(GraphicsDevice, 1, 1);
-
             pixel.SetData(new Color[] { new Color(255, 0, 0, 50) });
 
             base.Initialize();
-            
-
         }
 
         protected override void LoadContent()
         {
-
             playerPos = new Vector2(0, 0);
 
             player = new Player(playerPos, 1, Content.Load<Texture2D>("SpaceShip"));
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            gameManager = new GameManager();
+            gameManager = new GameManager(this);
 
             backGroundMusic = Content.Load<Song>("Hypnotik - Ken Arai");
 
             MediaPlayer.Play(backGroundMusic);
-
-
-
         }
 
-        //FEEDBACK Splits de code in de Update functie op in meerdere kleinere functies en probeer alleen maar Method Calls te doen in de Update functie
-        //FEEDBACK Zoals je _player.UpdatePlayer() hebt gedaan
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))

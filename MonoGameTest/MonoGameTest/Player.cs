@@ -13,14 +13,14 @@ namespace MonoGameTest
     {
         public Vector2 Position;
         public Texture2D ShipTexture;
-        float Scale;
-        private int playerSpeed;
-        private Rectangle? hitBox;
+        float scale;
+        int playerSpeed;
+        Rectangle? hitBox;
         public Rectangle HitBox
         {
             get
             {
-                hitBox ??= new(0, 0, (int)(ShipTexture.Width * Scale), (int)(ShipTexture.Height * Scale));
+                hitBox ??= new(0, 0, (int)(ShipTexture.Width * scale), (int)(ShipTexture.Height * scale));
 
                 Rectangle rect = hitBox.Value;
 
@@ -30,35 +30,14 @@ namespace MonoGameTest
                 return rect;
             }
         }
-        public List<Enemy> currentEnemies;
         public bool PlayerDeath;
         public Player(Vector2 pos, float scale, Texture2D shipTexture)
         {
             Position = pos;
-            Scale = scale;
-            ShipTexture = shipTexture;
+            this.scale = scale;
+            this.ShipTexture = shipTexture;
             playerSpeed = 13;
-            currentEnemies = new List<Enemy>();
         }
-
-        public bool EnemyCollision()
-        {
-            bool collided = false;
-            foreach (Enemy enemy in currentEnemies)
-            {
-                if (this.HitBox.Contains(enemy.HitBox))
-                {
-                    collided = true;
-                    Console.WriteLine("PLAYER HIT");
-                }
-                else
-                {
-                    collided = false;
-                }
-            }
-            return collided;
-        }
-
         public void Update(GraphicsDeviceManager graphics)
         {
             KeepPlayerOnScreen(graphics);
@@ -107,7 +86,7 @@ namespace MonoGameTest
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
         {
-            spriteBatch.Draw(ShipTexture, Position, null, Color.White, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(ShipTexture, Position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
             spriteBatch.Draw(pixel, HitBox, Color.White);
         }
     }
