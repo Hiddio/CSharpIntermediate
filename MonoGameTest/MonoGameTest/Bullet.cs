@@ -48,10 +48,9 @@ namespace MonoGameTest
             position.Y -= 10;
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-            spriteBatch.Draw(pixel, HitBox, Color.White);
         }
     }
 }

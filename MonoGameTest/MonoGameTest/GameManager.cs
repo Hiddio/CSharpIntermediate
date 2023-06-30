@@ -157,7 +157,7 @@ namespace MonoGameTest
             
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel, GraphicsDeviceManager graphics)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             foreach (Enemy enemy in currentEnemies)
             {
