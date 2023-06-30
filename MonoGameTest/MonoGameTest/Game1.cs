@@ -10,56 +10,52 @@ namespace MonoGameTest
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        
+        GraphicsDeviceManager graphics;
+        SpriteBatch spriteBatch;
+        
 
-        Song _backGroundMusic;
+        Song backGroundMusic;
+        Player player;
+        Vector2 playerPos;
+        GameManager gameManager;
 
-        Viewport _viewPort;
-        Player _player;
-        bool justFired;
-        List<Enemy> _activeEnemies = new List<Enemy>();
-        List<Bullet> _firedBullets = new List<Bullet>();
+        Texture2D pixel;
+
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-
-
         }
-        
+
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            graphics.PreferredBackBufferHeight = 900;
+            graphics.PreferredBackBufferWidth = 1000;
+
+            graphics.ApplyChanges();
+
+            pixel = new Texture2D(GraphicsDevice, 1, 1);
+            pixel.SetData(new Color[] { new Color(255, 0, 0, 50) });
 
             base.Initialize();
-
-            _graphics.PreferredBackBufferHeight = 900;
-            _graphics.PreferredBackBufferWidth = 1000;
-
-            _graphics.ApplyChanges();
-            _viewPort = _graphics.GraphicsDevice.Viewport;
         }
 
         protected override void LoadContent()
         {
+            playerPos = new Vector2(0, 0);
 
-            
-            _player = new Player();
+            player = new Player(playerPos, 1, Content.Load<Texture2D>("SpaceShip"));
 
-            _viewPort = new Viewport();
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            gameManager = new GameManager(this);
 
-           
-            _player._shipTexture = this.Content.Load<Texture2D>("SpaceShip");
+            backGroundMusic = Content.Load<Song>("Hypnotik - Ken Arai");
 
-            _backGroundMusic = this.Content.Load<Song>("Hypnotik - Ken Arai");
-            MediaPlayer.Play(_backGroundMusic);
-
-
-            // TODO: use this.Content to load your game content here
+            MediaPlayer.Play(backGroundMusic);
         }
 
         protected override void Update(GameTime gameTime)
@@ -67,35 +63,8 @@ namespace MonoGameTest
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _player.UpdatePlayer();
-            //_bullet.UpdateBullet();
-
-            
-            foreach(Bullet bullet in _firedBullets)
-            {
-                bullet.UpdateBullet(false);
-
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && justFired == false || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed && justFired == false)
-            {
-                justFired = true;
-                Console.WriteLine(justFired);
-                Bullet newBllet = new Bullet(_player._position, 2f);
-                newBllet._texture = Content.Load<Texture2D>("BulletTexture");
-                _firedBullets.Add(newBllet);
-                
-            }
-            if (Keyboard.GetState().IsKeyUp(Keys.Space) && GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
-            { 
-                justFired = false;
-            }
-
-            foreach(Enemy enemy in _activeEnemies)
-            {
-                enemy.Update();
-
-            }
-            // TODO: Add your update logic here
+            player.Update(graphics);
+            gameManager.Update(this, player, gameTime, graphics);
 
             base.Update(gameTime);
         }
@@ -104,20 +73,12 @@ namespace MonoGameTest
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_player._shipTexture, _player._position, Color.White);
+            spriteBatch.Begin();
+            
+            player.Draw(gameTime, spriteBatch);
+            gameManager.Draw(gameTime, spriteBatch, graphics);
 
-            foreach (Bullet bullet in _firedBullets)
-            {
-                bullet.Draw(gameTime, _spriteBatch);
-
-            }
-            foreach (Enemy enemy in _activeEnemies)
-            {
-                enemy.Draw(gameTime, _spriteBatch);
-            }
-            _spriteBatch.End();
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

@@ -1,42 +1,56 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
 
 namespace MonoGameTest
 {
     internal class Bullet
     {
-        public Vector2 _position;
-        public Texture2D _texture;
-        public float _scale;
-
-        public Bullet(Vector2 pos, float scale)
+        //FEEDBACK public Fields schrijf je met PascalCasing en ZONDER een underscore prefix "_"! 
+        Vector2 position;
+        Texture2D texture;
+        float scale;
+        Rectangle? hitBox;
+        public Rectangle HitBox
         {
-           _position = pos;
-           _scale = scale;
+
+            get
+            {
+                hitBox ??= new(0, 0, (int)(texture.Width * scale), (int)(texture.Height * scale));
+
+                Rectangle rect = hitBox.Value;
+
+                rect.X = (int)position.X;
+                rect.Y = (int)position.Y;
+
+                return rect;
+            }
         }
 
-        public void UpdateBullet(bool enemy)
+        public List<Enemy> currentEnemies;
+        float timer;
+        public bool Remove;
+        public Bullet(Vector2 pos, float scale, Texture2D texture)
         {
-            if(enemy == true)
+            position = pos;
+            this.scale = scale;
+            this.texture = texture;
+            currentEnemies = new List<Enemy>();
+        }
+        public void Update(GameTime gameTime)
+        {
+            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if(timer > 2)
             {
-                _position.Y += 10;
+                Remove = true;
             }
-            else
-            {
-                _position.Y -= 10;
-            }
-            
+            position.Y -= 10;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, _position, null, Color.White, 0, Vector2.Zero, _scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
         }
     }
 }

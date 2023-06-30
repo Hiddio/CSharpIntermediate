@@ -4,61 +4,89 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace MonoGameTest
 {
     internal class Player
     {
-        public Vector2 _position;
-        public Texture2D _shipTexture;
-
-        public Player()
+        public Vector2 Position;
+        public Texture2D ShipTexture;
+        float scale;
+        int playerSpeed;
+        Rectangle? hitBox;
+        public Rectangle HitBox
         {
+            get
+            {
+                hitBox ??= new(0, 0, (int)(ShipTexture.Width * scale), (int)(ShipTexture.Height * scale));
 
-            _position = new Microsoft.Xna.Framework.Vector2(0, 0);
-            
+                Rectangle rect = hitBox.Value;
 
-            
+                rect.X = (int)Position.X;
+                rect.Y = (int)Position.Y;
+
+                return rect;
+            }
         }
-        
-        public void UpdatePlayer()
+        public bool PlayerDeath;
+        public Player(Vector2 pos, float scale, Texture2D shipTexture)
+        {
+            Position = pos;
+            this.scale = scale;
+            this.ShipTexture = shipTexture;
+            playerSpeed = 13;
+        }
+        public void Update(GraphicsDeviceManager graphics)
+        {
+            KeepPlayerOnScreen(graphics);
+            PlayerMovement();
+        }
+
+        public void KeepPlayerOnScreen(GraphicsDeviceManager graphics)
+        {
+            if (Position.X > graphics.PreferredBackBufferWidth - ShipTexture.Width)
+            {
+                Position.X = graphics.PreferredBackBufferWidth - ShipTexture.Width;
+            }
+            else if (Position.X < ShipTexture.Width / 2)
+            {
+                Position.X = ShipTexture.Width / 2;
+            }
+            else if (Position.Y > graphics.PreferredBackBufferHeight - ShipTexture.Height)
+            {
+                Position.Y = graphics.PreferredBackBufferHeight - ShipTexture.Height;
+            }
+            else if (Position.Y < ShipTexture.Height / 2)
+            {
+                Position.Y = ShipTexture.Height / 2;
+            }
+        }
+
+        public void PlayerMovement()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W) || Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
             {
-                _position.Y -= 10;
+                Position.Y -= playerSpeed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S) || Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
             {
-                _position.Y += 10;
+                Position.Y += playerSpeed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A) || Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
             {
-                _position.X -= 10;
+                Position.X -= playerSpeed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D) || Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
             {
-                _position.X += 10;
+                Position.X += playerSpeed;
             }
-            if (_position.Y <= -10)
-            {
-                _position.Y = 780;
-            }
-            if (_position.X <= -10)
-            {
-                _position.X = 980;
-            }
-            if (_position.X >= 1000)
-            {
-                _position.X = 0;
-            }
-            if (_position.Y >= 870)
-            {
-                _position.Y = 0;
-            }
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(ShipTexture, Position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
         }
     }
 }
