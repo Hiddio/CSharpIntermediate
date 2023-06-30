@@ -146,7 +146,18 @@ namespace MonoGameTest
             spriteBatch.DrawString(Impact, $"Score: {score}", new Vector2(50, 50), Color.White);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel)
+        public void DrawInstructions(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            float timer = 5;
+            if(totalTime <= timer)
+            {
+                spriteBatch.DrawString(Impact, $"Move around with WASD, <^>v or an NES controller", new Vector2(graphics.PreferredBackBufferWidth / 10, 100), Color.White);
+                spriteBatch.DrawString(Impact, $"Fire bullets with [Spacebar] or A on an NES controller", new Vector2(graphics.PreferredBackBufferWidth / 10, graphics.PreferredBackBufferHeight - 50), Color.White);
+            }
+            
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D pixel, GraphicsDeviceManager graphics)
         {
             foreach (Enemy enemy in currentEnemies)
             {
@@ -158,6 +169,7 @@ namespace MonoGameTest
                 bullet.Draw(gameTime, spriteBatch, pixel);
             }
             DrawScore(spriteBatch);
+            DrawInstructions(spriteBatch, graphics);
         }
     }
 }
