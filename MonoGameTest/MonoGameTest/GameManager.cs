@@ -18,15 +18,14 @@ namespace MonoGameTest
         float totalTime;
         float timerTime = 5f;
         float addedTime = 5f;
-        SpriteFont Impact;
+        SpriteFont impact;
         int score;
-        string scoreString;
 
         public GameManager(Game1 gameOne)
         {
             currentEnemies = new List<Enemy>();
             firedBullets = new List<Bullet>();
-            Impact = gameOne.Content.Load<SpriteFont>("Impact");
+            impact = gameOne.Content.Load<SpriteFont>("Impact");
             
         }
 
@@ -73,7 +72,7 @@ namespace MonoGameTest
             {
                 justFired = true;
 
-                Bullet newBullet = new Bullet(player.Position - (new Vector2(player.ShipTexture.Width / 2, player.ShipTexture.Height / 2)), 2f, gameOne.Content.Load<Texture2D>("BulletTexture"));
+                Bullet newBullet = new Bullet(player.Position - (new Vector2(0, player.ShipTexture.Height / 2)), 1f, gameOne.Content.Load<Texture2D>("BulletTexture"));
 
                 firedBullets.Add(newBullet);
             }
@@ -143,7 +142,7 @@ namespace MonoGameTest
 
         public void DrawScore(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(Impact, $"Score: {score}", new Vector2(50, 50), Color.White);
+            spriteBatch.DrawString(impact, $"Score: {score}", new Vector2(50, 50), Color.White);
         }
 
         public void DrawInstructions(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
@@ -151,8 +150,8 @@ namespace MonoGameTest
             float timer = 5;
             if(totalTime <= timer)
             {
-                spriteBatch.DrawString(Impact, $"Move around with WASD, <^>v or an NES controller", new Vector2(graphics.PreferredBackBufferWidth / 10, 100), Color.White);
-                spriteBatch.DrawString(Impact, $"Fire bullets with [Spacebar] or A on an NES controller", new Vector2(graphics.PreferredBackBufferWidth / 10, graphics.PreferredBackBufferHeight - 50), Color.White);
+                spriteBatch.DrawString(impact, $"Move around with WASD, <^>v or an NES controller", new Vector2(graphics.PreferredBackBufferWidth / 10, 100), Color.White);
+                spriteBatch.DrawString(impact, $"Fire bullets with [Spacebar] or A on an NES controller", new Vector2(graphics.PreferredBackBufferWidth / 10, graphics.PreferredBackBufferHeight - 50), Color.White);
             }
             
         }
@@ -161,12 +160,12 @@ namespace MonoGameTest
         {
             foreach (Enemy enemy in currentEnemies)
             {
-                enemy.Draw(gameTime, spriteBatch, pixel);
+                enemy.Draw(gameTime, spriteBatch);
             }
 
             foreach (Bullet bullet in firedBullets)
             {
-                bullet.Draw(gameTime, spriteBatch, pixel);
+                bullet.Draw(gameTime, spriteBatch);
             }
             DrawScore(spriteBatch);
             DrawInstructions(spriteBatch, graphics);

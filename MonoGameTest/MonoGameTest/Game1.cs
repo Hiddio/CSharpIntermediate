@@ -75,8 +75,8 @@ namespace MonoGameTest
 
             spriteBatch.Begin();
             
-            player.Draw(gameTime, spriteBatch, pixel);
-            gameManager.Draw(gameTime, spriteBatch, pixel, graphics);
+            player.Draw(gameTime, spriteBatch);
+            gameManager.Draw(gameTime, spriteBatch, graphics);
 
             spriteBatch.End();
 
