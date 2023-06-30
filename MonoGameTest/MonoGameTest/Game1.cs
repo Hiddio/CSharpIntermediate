@@ -20,8 +20,6 @@ namespace MonoGameTest
         Vector2 playerPos;
         GameManager gameManager;
 
-        Texture2D pixel;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -36,9 +34,6 @@ namespace MonoGameTest
             graphics.PreferredBackBufferWidth = 1000;
 
             graphics.ApplyChanges();
-
-            pixel = new Texture2D(GraphicsDevice, 1, 1);
-            pixel.SetData(new Color[] { new Color(255, 0, 0, 50) });
 
             base.Initialize();
         }
@@ -71,7 +66,7 @@ namespace MonoGameTest
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.MidnightBlue);
 
             spriteBatch.Begin();
             

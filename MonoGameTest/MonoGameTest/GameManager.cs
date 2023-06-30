@@ -20,17 +20,19 @@ namespace MonoGameTest
         float addedTime = 5f;
         SpriteFont impact;
         int score;
+        bool enemySpawn;
 
         public GameManager(Game1 gameOne)
         {
             currentEnemies = new List<Enemy>();
             firedBullets = new List<Bullet>();
             impact = gameOne.Content.Load<SpriteFont>("Impact");
-            
+            enemySpawn = true;
         }
 
         public void CreateEnemy(Game1 gameOne, GraphicsDeviceManager graphics, GameTime gameTime)
         {
+           
             totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (totalTime >= timerTime)
             {
@@ -116,15 +118,25 @@ namespace MonoGameTest
             {
                 if (player.HitBox.Intersects(currentEnemies[j].HitBox))
                 {
-                    Console.WriteLine($"Player got hit");
-                    currentEnemies[j].Remove = true;
+                    Console.WriteLine($"__________________________________________________________");
+                    Console.WriteLine($"\nPlayer got hit\n");
+                    Console.WriteLine($"You score was {score}, well done!\n\n\n");
+                    Console.WriteLine($"__________________________________________________________");
                     player.PlayerDeath = true;
                 }
             }
         }
 
-        public void PlayerDeath(Game1 gameOne, bool playerDeath)
+        public void PlayerDeathOrWin(Game1 gameOne, bool playerDeath)
         {
+            if(score == 50)
+            {
+                Console.WriteLine($"__________________________________________________________");
+                Console.WriteLine($"\nYOU WIN!!\n");
+                Console.WriteLine($"You reached the score of! {score}, well done!\n\n\n");
+                Console.WriteLine($"__________________________________________________________");
+                gameOne.Exit();
+            }
             if(playerDeath == true)
             {
                 gameOne.Exit();
@@ -137,7 +149,7 @@ namespace MonoGameTest
             CreateBullet(gameOne, player, gameTime);
             CheckPlayerShoot(gameOne);
             PlayerHit(player);
-            PlayerDeath(gameOne, player.PlayerDeath);
+            PlayerDeathOrWin(gameOne, player.PlayerDeath);
         }
 
         public void DrawScore(SpriteBatch spriteBatch)
@@ -155,6 +167,14 @@ namespace MonoGameTest
             }
             
         }
+        public void DrawWin(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            if(score == 50)
+            {
+                spriteBatch.DrawString(impact, $"You win by killing 50 enemies!", new Vector2(graphics.PreferredBackBufferWidth / 10, 100), Color.White);
+                spriteBatch.DrawString(impact, $"press Spacebar or A on an NES controller to exit", new Vector2(graphics.PreferredBackBufferWidth / 10, graphics.PreferredBackBufferHeight / 2), Color.White);
+            }
+        }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
@@ -169,6 +189,7 @@ namespace MonoGameTest
             }
             DrawScore(spriteBatch);
             DrawInstructions(spriteBatch, graphics);
+            DrawWin(spriteBatch, graphics);
         }
     }
 }
