@@ -11,10 +11,13 @@ namespace MonoGameTest
 {
     internal class Enemy
     {
+        public bool Remove;
+
         Vector2 position;
         Texture2D enemyTexture;
         float scale;
         // backing field
+        float timer;
         Rectangle? hitbox;
         // public hitbox property
         public Rectangle HitBox
@@ -34,8 +37,6 @@ namespace MonoGameTest
             }
         }
 
-        float timer;
-        public bool Remove;
 
         public Enemy(Vector2 pos, float scale, Texture2D enemyTexture)
         {

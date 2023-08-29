@@ -20,14 +20,12 @@ namespace MonoGameTest
         float addedTime = 5f;
         SpriteFont impact;
         int score;
-        bool enemySpawn;
 
         public GameManager(Game1 gameOne)
         {
             currentEnemies = new List<Enemy>();
             firedBullets = new List<Bullet>();
             impact = gameOne.Content.Load<SpriteFont>("Impact");
-            enemySpawn = true;
         }
 
         public void CreateEnemy(Game1 gameOne, GraphicsDeviceManager graphics, GameTime gameTime)

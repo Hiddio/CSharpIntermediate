@@ -17,7 +17,6 @@ namespace MonoGameTest
 
         Song backGroundMusic;
         Player player;
-        Vector2 playerPos;
         GameManager gameManager;
 
         public Game1()
@@ -40,9 +39,8 @@ namespace MonoGameTest
 
         protected override void LoadContent()
         {
-            playerPos = new Vector2(0, 0);
 
-            player = new Player(playerPos, 1, Content.Load<Texture2D>("SpaceShip"));
+            player = new Player(Vector2.Zero, 1, Content.Load<Texture2D>("SpaceShip"));
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
